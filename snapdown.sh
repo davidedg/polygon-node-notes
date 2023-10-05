@@ -1,7 +1,7 @@
 #!/bin/bash
 ########################################################################################################
 # Script to automate download, verification and extraction of latest Polygon snapshots
-# Author: Davide Del Grande
+# Author: Davide Del Grande - https://github.com/davidedg/polygon-node-notes
 #  based on original script: https://snapshot-download.polygon.technology/snapdown.sh
 #   the default behaviour is retained, new functionalities must be enabled explicitly
 #
