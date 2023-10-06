@@ -56,6 +56,7 @@ function list_descendants() {
 
 function init_fifo_stream() {
   tarname=$(basename $1)
+  _self="${0##*/}"
   fifoi=$(realpath ~/${_self}_$tarname.fifo)
   if [[ -z "${FIFO[$1]}" ]]; then
     if [[ ! -p $fifoi ]]; then
