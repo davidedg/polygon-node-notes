@@ -9,7 +9,6 @@
 #  - stream downloaded files directly into an extraction pipe, reducing time and required space
 #  - preserve downloaded files
 #  - separated temporary directory to hold downloaded and temporary data
-#  - specify workers (# cpus) to use for extraction, default=1, 0=use #cpus avail
 #
 # If you wish to send your appreciation for this work, you can send me any token on any network:
 # 0xDd288FA0D04468bEeA02F9996bc16D1Fe599D827
@@ -141,12 +140,6 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
-    -w | --workers)
-      validate_num "$2"
-      workers="$2"
-      shift # past argument
-      shift # past value
-      ;;
     *) # unknown option
       echo "Unknown option: $1"
       exit 1
@@ -168,7 +161,6 @@ if [[ "$keepdl" == "false" ]]; then
 else 
   checksum=${checksum:-false}
 fi
-workers=${workers:-1}
 
 
 ########################################################################################################
@@ -243,7 +235,7 @@ for file in $(find $tempdir -name "$client-$network-snapshot-bulk-*-part-*" -pri
         processed_dates[$datestamp]=1
         if [[ "$streams" == "true" ]]; then
             fifoslot="$client-$network-snapshot-${datestamp}"
-            init_fifo_stream "$fifoslot" "tar -I \"zstd -T$workers\" -xf - -C ."
+            init_fifo_stream "$fifoslot" "tar -I zstd -xf - -C ."
             for tarpart in "$tempdir"/$client-$network-snapshot-${datestamp}-part* ; do
                 echo "## Extracting: $(basename $tarpart)"
                 pv "$tarpart" > ${FIFO[$fifoslot]}
@@ -265,7 +257,7 @@ for file in $(find $tempdir -name "$client-$network-snapshot-bulk-*-part-*" -pri
              ## todo debug to remove
                 echo rm "$tempdir"/$client-$network-snapshot-${datestamp}-part*
             fi
-            pv $outputtar | tar -I "zstd -T$workers" -xf - -C . && rm $outputtar
+            pv $outputtar | tar -I zstd -xf - -C . && rm $outputtar
         fi
     fi
 done
@@ -279,7 +271,7 @@ for file in $(find $tempdir -name "$client-$network-snapshot-*-part-*" -print | 
         processed_dates[$datestamp]=1
         if [[ "$streams" == "true" ]]; then
             fifoslot="$client-$network-snapshot-${datestamp}"
-            init_fifo_stream "$fifoslot" "tar -I \"zstd -T$workers\" -xf - -C . --strip-components=3"        
+            init_fifo_stream "$fifoslot" "tar -I zstd -xf - -C . --strip-components=3"        
             for tarpart in "$tempdir"/$client-$network-snapshot-${datestamp}-part* ; do
                 echo "## Extracting: $(basename $tarpart)"
                 pv "$tarpart" > ${FIFO[$fifoslot]}
@@ -301,7 +293,7 @@ for file in $(find $tempdir -name "$client-$network-snapshot-*-part-*" -print | 
              ## todo debug to remove
                 echo rm "$tempdir"/$client-$network-snapshot-${datestamp}-part*
             fi
-            pv $outputtar | tar -I "zstd -T$workers" -xf - -C . --strip-components=3 && rm $outputtar
+            pv $outputtar | tar -I zstd -xf - -C . --strip-components=3 && rm $outputtar
         fi
     fi
 done
