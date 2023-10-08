@@ -290,7 +290,7 @@ for file in $(find $tempdir -name "$client-$network-snapshot-*-part-*" -print | 
             echo "Join parts for ${datestamp} then extract"
             cat "$tempdir"/$client-$network-snapshot-${datestamp}-part* > "$outputtar"
             if [[ "$keepdl" == "false" ]]; then
-                echo rm f "$tempdir"/$client-$network-snapshot-${datestamp}-part*
+                echo rm -f "$tempdir"/$client-$network-snapshot-${datestamp}-part*
             fi
             pv $outputtar | tar -I zstd -xf - -C . --strip-components=3 && rm -f $outputtar
         fi
