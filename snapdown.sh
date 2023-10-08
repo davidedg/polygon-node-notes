@@ -244,7 +244,7 @@ for file in $(find $tempdir -name "$client-$network-snapshot-bulk-*-part-*" -pri
                 # keep / delete already processed downloaded segment
                 if [[ "$keepdl" == "false" ]]; then
                     echo "--- removing $tarpart ---"
-                    touch "$tarpart"
+                    rm -f "$tarpart"
                 fi
             done
             # close streamer
@@ -255,10 +255,9 @@ for file in $(find $tempdir -name "$client-$network-snapshot-bulk-*-part-*" -pri
             echo "Join parts for ${datestamp} then extract"
             cat "$tempdir"/$client-$network-snapshot-${datestamp}-part* > "$outputtar"
             if [[ "$keepdl" == "false" ]]; then
-             ## todo debug to remove
-                echo rm "$tempdir"/$client-$network-snapshot-${datestamp}-part*
+                rm -f "$tempdir"/$client-$network-snapshot-${datestamp}-part*
             fi
-            pv $outputtar | tar -I zstd -xf - -C . && rm $outputtar
+            pv $outputtar | tar -I zstd -xf - -C . && rm -f $outputtar
         fi
     fi
 done
@@ -280,7 +279,7 @@ for file in $(find $tempdir -name "$client-$network-snapshot-*-part-*" -print | 
                 # keep / delete already processed downloaded segment
                 if [[ "$keepdl" == "false" ]]; then
                     echo "--- removing $tarpart ---"
-                    touch "$tarpart"
+                    rm -f "$tarpart"
                 fi
             done
             # close streamer
@@ -291,10 +290,9 @@ for file in $(find $tempdir -name "$client-$network-snapshot-*-part-*" -print | 
             echo "Join parts for ${datestamp} then extract"
             cat "$tempdir"/$client-$network-snapshot-${datestamp}-part* > "$outputtar"
             if [[ "$keepdl" == "false" ]]; then
-             ## todo debug to remove
-                echo rm "$tempdir"/$client-$network-snapshot-${datestamp}-part*
+                echo rm f "$tempdir"/$client-$network-snapshot-${datestamp}-part*
             fi
-            pv $outputtar | tar -I zstd -xf - -C . --strip-components=3 && rm $outputtar
+            pv $outputtar | tar -I zstd -xf - -C . --strip-components=3 && rm -f $outputtar
         fi
     fi
 done
