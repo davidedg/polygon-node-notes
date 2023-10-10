@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "Heimdall stats:"
+
+STATUS=$(curl 127.0.0.1:26657/status 2>/dev/null)
+NETINFO=$(curl 127.0.0.1:26657/net_info? 2>/dev/null)
+
+echo -n " Connected Peers: "
+echo "$NETINFO" | jq -M .result.n_peers
+
+echo -n " Latest Block Height: "
+echo "$STATUS" | jq -M .result.sync_info.latest_block_height
+
+echo -n " Catching up: "
+echo "$STATUS" | jq .result.sync_info.catching_up
