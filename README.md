@@ -1,7 +1,10 @@
 # polygon-node-notes
-Notes on building a Polygon node on a Debian node
+Notes on building a Polygon node on Debian
 
+If you wish to send your appreciation for this work, you can send me any token on any network:
+0xDd288FA0D04468bEeA02F9996bc16D1Fe599D827
 
+\
 Download the snapshot downloader script:
 
     wget https://github.com/davidedg/polygon-node-notes/raw/main/snapdown.sh
