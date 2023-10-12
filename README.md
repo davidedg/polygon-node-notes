@@ -14,8 +14,8 @@ Download the snapshot downloader script:
 Get and install the latest stable release from https://github.com/maticnetwork/heimdall/releases
 
     wget https://github.com/maticnetwork/heimdall/releases/download/v1.0.2/heimdalld-v1.0.2-amd64.deb
-    wget https://github.com/maticnetwork/heimdall/releases/download/v1.0.2/heimdalld-mainnet-validator-config_v1.0.2-amd64.deb
-    apt install ./heimdalld-v1.0.2-amd64.deb ./heimdalld-mainnet-validator-config_v1.0.2-amd64.deb
+    wget https://github.com/maticnetwork/heimdall/releases/download/v1.0.2/heimdalld-mainnet-sentry-config_v1.0.2-amd64.deb
+    apt install ./heimdalld-v1.0.2-amd64.deb ./heimdalld-mainnet-sentry-config_v1.0.2-amd64.deb
         
 Dont run Heimdall on boot (optional)
 
@@ -54,11 +54,12 @@ Changes to `/var/lib/heimdall/config/config.toml`
 \
 Symlink the downloaded snaphot to data directory
 
-    sudo -u heimdall  ln -s /mnt/data/heimdall /var/lib/heimdall/data 
+    mv /var/lib/heimdall/data /var/lib/heimdall/data-orig && sudo -u heimdall  ln -s /mnt/data/heimdall /var/lib/heimdall/data 
 
-Reset permissions to heimdall user (mind the `-L` switch !)
+Reset permissions to heimdall user (mind the `-L` switch !) and check that no other files are not owned by heimdall
 
     chown heimdall:nogroup -L -R /var/lib/heimdall/
+    find /var/lib/heimdall/ -not -user heimdall
 
 Run Heimdall
 
@@ -72,14 +73,16 @@ Check sync status - check [info-heimdall](./info-heimdall)
 
     curl 127.0.0.1:26657/status
 
+  - Do not start bor until Heimdall is synced! (curl localhost:26657/status - catching_up = false !)
+
 
 ## Bor (req ports: 30303 tcp/udp)
 
 Get and install the latest stable release from https://github.com/maticnetwork/bor/releases
 
     wget https://github.com/maticnetwork/bor/releases/download/v1.0.6/bor-v1.0.6-amd64.deb
-    wget https://github.com/maticnetwork/bor/releases/download/v1.0.6/bor-mainnet-validator-config_v1.0.6-amd64.deb
-    apt install ./bor-v1.0.6-amd64.deb ./bor-mainnet-validator-config_v1.0.6-amd64.deb
+    wget https://github.com/maticnetwork/bor/releases/download/v1.0.6/bor-mainnet-sentry-config_v1.0.6-amd64.deb
+    apt install ./bor-v1.0.6-amd64.deb ./bor-mainnet-sentry-config_v1.0.6-amd64.deb
 
 Dont run Bor on boot (optional)
 
