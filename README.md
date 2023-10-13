@@ -154,6 +154,13 @@ Changes to `/var/lib/bor/config.toml`
           metrics = true
 
 \
+Symlink the chaindata dir in the snapshot
+
+        sudo -u bor mkdir -p /mnt/data/bor/bor
+        mv /mnt/data/bor/bor/chaindata /mnt/data/bor/bor/chaindata-old
+        sudo -u bor ln -s ".." /mnt/data/bor/bor/chaindata
+
+\
 Reset permissions to bor user (mind the `-L` switch !) and check that no other files are not owned by bor
 
     chown bor:nogroup -L -R /var/lib/bor/
