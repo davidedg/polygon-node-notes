@@ -52,14 +52,14 @@ Changes to `/var/lib/heimdall/config/config.toml`
         external_address = "1.2.3.4"
 
 \
-Symlink the downloaded snaphot to data directory
+Symlink the downloaded heimdall snaphot to data directory
 
     mv /var/lib/heimdall/data /var/lib/heimdall/data-orig && sudo -u heimdall  ln -s /mnt/data/heimdall /var/lib/heimdall/data 
 
 Reset permissions to heimdall user (mind the `-L` switch !) and check that no other files are not owned by heimdall
 
     chown heimdall:nogroup -L -R /var/lib/heimdall/
-    find /var/lib/heimdall/ -not -user heimdall
+    find -L /var/lib/heimdall/ -not -user heimdall
 
 Run Heimdall
 
@@ -94,7 +94,76 @@ Download Bor snapshots (this might take days)
     tmux
     bash snapdown.sh -n mainnet -c bor -d /mnt/data/bor -t /mnt/data/bor-tmp -v true -z true -k false
 
+\
+Symlink the downloaded bor snaphot to data directory (bor packages do not set perm for bor user)
+
+    ln -s /mnt/data/bor /var/lib/bor/data
+
+Download the mainnet bor genesis file
+
+    curl -o /var/lib/bor/data/genesis.json 'https://raw.githubusercontent.com/maticnetwork/bor/master/builder/files/genesis-mainnet-v1.json'
+
+Generate a new config.toml in `/var/lib/bor/config.toml`
+
+    mv /var/lib/bor/config.toml /var/lib/bor/config-default-sentry.toml && bor dumpconfig > /var/lib/bor/config.toml
+
+\
+Changes to `/var/lib/bor/config.toml`
+
+  - Change datadir
+
+        sed -i 's|^datadir\s*=.*|datadir = "/var/lib/bor/data"|g' /var/lib/bor/config.toml
 
 
+  - Enable HTTP, WS, IPC endpoints
 
+        sed -i 's|ipcdisable\s*=.*|ipcdisable = false|g' /var/lib/bor/config.toml
+        sed -i 's|ipcpath\s*=.*|ipcpath = "bor.ipc"|g' /var/lib/bor/config.toml
+
+        [jsonrpc.http]
+          enabled = true
+          host = "0.0.0.0"
+          api = ["eth", "net", "web3", "txpool", "bor"]
+
+        [jsonrpc.ws]
+          enabled = true
+          host = "0.0.0.0"
+          api = ["eth", "net", "web3", "txpool", "bor"]
+
+  - Review recent recommended settings: https://forum.polygon.technology/t/recommended-peer-settings-for-mainnet-nodes/13018#bor-2
+
+        [p2p]
+        maxpeers = 50
+
+        [p2p.discovery]
+        bootnodes = ["enode://76316d1cb93c8ed407d3332d595233401250d48f8fbb1d9c65bd18c0495eca1b43ec38ee0ea1c257c0abb7d1f25d649d359cdfe5a805842159cfe36c5f66b7e8@52.78.36.216:30303", "enode://b8f1cc9c5d4403703fbf377116469667d2b1823c0daf16b7250aa576bacf399e42c3930ccfcb02c5df6879565a2b8931335565f0e8d3f8e72385ecf4a4bf160a@3.36.224.80:30303", "enode://8729e0c825f3d9cad382555f3e46dcff21af323e89025a0e6312df541f4a9e73abfa562d64906f5e59c51fe6f0501b3e61b07979606c56329c020ed739910759@54.194.245.5:30303", "enode://681ebac58d8dd2d8a6eef15329dfbad0ab960561524cf2dfde40ad646736fe5c244020f20b87e7c1520820bc625cfb487dd71d63a3a3bf0baea2dbb8ec7c79f1@34.240.245.39:30303"]
+
+  - (optional) Increase resources (review num of procs)
+
+        [cache]
+          cache = 4096
+          triesinmemory = 256
+
+        [parallelevm]
+          enable = true
+          procs = 8
+
+  - (optional) Enable telemetry
+
+        [telemetry]
+          metrics = true
+
+\
+Reset permissions to bor user (mind the `-L` switch !) and check that no other files are not owned by bor
+
+    chown bor:nogroup -L -R /var/lib/bor/
+    find -L /var/lib/bor/ -not -user bor
+
+Run Bor (double check that heimdall is in sync!)
+
+    systemctl start bor
+
+Check logs
+
+    journalctl -u bor.service -f
 
