@@ -151,7 +151,7 @@ Create data structue and symlink the snapshot chaindata
     
     mkdir -p /var/lib/bor/data/bor
 	ln -s /mnt/data/bor/ /var/lib/bor/data/bor/chaindata
-	ln -s . /var/lib/bor/data/bor/chaindata/ancient/chain
+	### ln -s . /var/lib/bor/data/bor/chaindata/ancient/chain -- "Symbolic link ancient database is not supported path=/var/lib/bor/data/bor/chaindata/ancient/chain"
 	
 	ln -s /mnt/data/bor/bor/nodes /var/lib/bor/data/bor/nodes
 	ln -s /mnt/data/bor/bor/triecache /var/lib/bor/data/bor/triecache
