@@ -94,15 +94,6 @@ Download Bor snapshots (this might take days)
     tmux
     bash snapdown.sh -n mainnet -c bor -d /mnt/data/bor -t /mnt/data/bor-tmp -v true -z true -k false
 
-\
-Symlink the downloaded bor snaphot to data directory (bor packages do not set perm for bor user)
-
-    ln -s /mnt/data/bor /var/lib/bor/data
-
-Download the mainnet bor genesis file
-
-    curl -o /var/lib/bor/data/genesis.json 'https://raw.githubusercontent.com/maticnetwork/bor/master/builder/files/genesis-mainnet-v1.json'
-
 Generate a new config.toml in `/var/lib/bor/config.toml`
 
     mv /var/lib/bor/config.toml /var/lib/bor/config-default-sentry.toml && bor dumpconfig > /var/lib/bor/config.toml
@@ -154,11 +145,20 @@ Changes to `/var/lib/bor/config.toml`
           metrics = true
 
 \
-Symlink the chaindata dir in the snapshot
+Create data structue and symlink the snapshot chaindata
 
-        sudo -u bor mkdir -p /mnt/data/bor/bor
-        mv /mnt/data/bor/bor/chaindata /mnt/data/bor/bor/chaindata-old
-        sudo -u bor ln -s ".." /mnt/data/bor/bor/chaindata
+    [[ -s /mnt/data/bor/bor/chaindata ]] && rm /mnt/data/bor/bor/chaindata
+    
+    mkdir -p /var/lib/bor/data/bor
+	ln -s /mnt/data/bor/ /var/lib/bor/data/bor/chaindata
+	ln -s . /var/lib/bor/data/bor/chaindata/ancient/chain
+	
+	ln -s /mnt/data/bor/bor/nodes /var/lib/bor/data/bor/nodes
+	ln -s /mnt/data/bor/bor/triecache /var/lib/bor/data/bor/triecache
+
+Download the mainnet bor genesis file
+
+    curl -o /var/lib/bor/data/genesis.json 'https://raw.githubusercontent.com/maticnetwork/bor/master/builder/files/genesis-mainnet-v1.json'
 
 \
 Reset permissions to bor user (mind the `-L` switch !) and check that no other files are not owned by bor
@@ -173,4 +173,3 @@ Run Bor (double check that heimdall is in sync!)
 Check logs
 
     journalctl -u bor.service -f
-
