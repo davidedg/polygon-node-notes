@@ -145,7 +145,7 @@ Changes to `/var/lib/bor/config.toml`
           metrics = true
 
 \
-Create data structue and symlink the snapshot chaindata
+Create data structure and symlink the snapshot chaindata (see also [bor-alternative.md](./bor-alternative.md))
 
     [[ -s /mnt/data/bor/bor/chaindata ]] && rm /mnt/data/bor/bor/chaindata
     
@@ -153,6 +153,17 @@ Create data structue and symlink the snapshot chaindata
 	ln -s /mnt/data/bor/ /var/lib/bor/data/bor/chaindata
 	ln -s /mnt/data/bor/bor/nodes /var/lib/bor/data/bor/nodes
 	ln -s /mnt/data/bor/bor/triecache /var/lib/bor/data/bor/triecache
+
+	tree -d /var/lib/bor/
+		/var/lib/bor/
+		└── data
+		    ├── bor
+		    │   ├── chaindata -> /mnt/datassd/bor/chaindata
+		    │   ├── nodes -> /mnt/data/bor/bor/nodes
+		    │   └── triecache -> /mnt/data/bor/bor/triecache
+		    └── keystore
+	
+
 
 Download the mainnet bor genesis file
 
