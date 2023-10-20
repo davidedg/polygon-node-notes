@@ -154,14 +154,20 @@ Create data structure and symlink the snapshot chaindata (see also [bor-alternat
 	ln -s /mnt/data/bor/bor/nodes /var/lib/bor/data/bor/nodes
 	ln -s /mnt/data/bor/bor/triecache /var/lib/bor/data/bor/triecache
 
-	tree -d /var/lib/bor/
-		/var/lib/bor/
-		└── data
-		    ├── bor
-		    │   ├── chaindata -> /mnt/datassd/bor/chaindata
-		    │   ├── nodes -> /mnt/data/bor/bor/nodes
-		    │   └── triecache -> /mnt/data/bor/bor/triecache
-		    └── keystore
+	tree -F -L 3 /var/lib/bor/
+		/var/lib/bor//
+		├── config.toml
+		└── data/
+		    ├── bor/
+		    │   ├── chaindata -> /mnt/data/bor/chaindata/
+		    │   ├── nodes -> /mnt/data/bor/bor/nodes/
+		    │   ├── triecache ->  /mnt/data/bor/bor/triecache/
+		    │   ├── LOCK
+		    │   ├── nodekey
+		    │   └── transactions.rlp
+		    ├── bor.ipc=
+		    ├── genesis.json
+		    └── keystore/
 	
 
 
