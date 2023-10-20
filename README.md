@@ -188,3 +188,17 @@ Run Bor (double check that heimdall is in sync!)
 Check logs
 
     journalctl -u bor.service -f
+
+Attach to admin interface and check progress
+
+	bor attach /var/lib/bor/data/bor.ipc
+
+  - Check how many peers are connected
+
+		> admin.peers.length
+
+  - Check how many blocks till sync
+
+		> eth.syncing.highestBlock - eth.syncing.currentBlock
+		170749
+
