@@ -34,6 +34,11 @@ Edit the unit definition if required (e.g.: change User to root or change the "-
     systemctl daemon-reload
 
 \
+Initialize Heimdall config file
+
+    sudo -u heimdall heimdalld init --chain=mainnet --home /var/lib/heimdall
+
+\
 Use a pre-populated address book file ( [example](./addrbook.json) ), put it under `/var/lib/heimdall/config/`
 
 \
