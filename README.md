@@ -36,6 +36,7 @@ Edit the unit definition if required (e.g.: change User to root or change the "-
 \
 Initialize Heimdall config file
 
+    chown heimdall /var/lib/heimdall
     sudo -u heimdall heimdalld init --chain=mainnet --home /var/lib/heimdall
 
 \
