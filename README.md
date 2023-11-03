@@ -55,7 +55,7 @@ Changes to `/var/lib/heimdall/config/config.toml`
 
   - set the public ip address (if under NAT)
 
-        external_address = "1.2.3.4"
+        external_address = "1.2.3.4:26656"
 
 \
 Symlink the downloaded heimdall snaphot to data directory
