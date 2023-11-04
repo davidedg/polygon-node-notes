@@ -1,5 +1,5 @@
 # polygon-node-notes
-Notes on building a Polygon node on Debian
+Notes on building a MAINNET Polygon node on Debian
 
 If you wish to send your appreciation for this work, you can send me any token on any network:
 0xDd288FA0D04468bEeA02F9996bc16D1Fe599D827
@@ -210,3 +210,4 @@ Attach to admin interface and check progress
 		> eth.syncing.highestBlock - eth.syncing.currentBlock
 		170749
 
+  - Check bor status - check [info-bor](./info-bor) 
