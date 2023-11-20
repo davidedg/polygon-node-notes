@@ -13,16 +13,16 @@ Download the snapshot downloader script:
 
 Get and install the latest stable release from https://github.com/maticnetwork/heimdall/releases
 
-    wget https://github.com/maticnetwork/heimdall/releases/download/v1.0.2/heimdalld-v1.0.2-amd64.deb
-    wget https://github.com/maticnetwork/heimdall/releases/download/v1.0.2/heimdalld-mainnet-sentry-config_v1.0.2-amd64.deb
-    apt install ./heimdalld-v1.0.2-amd64.deb ./heimdalld-mainnet-sentry-config_v1.0.2-amd64.deb
+    wget https://github.com/maticnetwork/heimdall/releases/download/v1.0.3/heimdalld-v1.0.3-amd64.deb
+    wget https://github.com/maticnetwork/heimdall/releases/download/v1.0.3/heimdalld-mainnet-sentry-config_v1.0.3-amd64.deb
+    apt install ./heimdalld-v1.0.3-amd64.deb ./heimdalld-mainnet-sentry-config_v1.0.3-amd64.deb
         
 Dont run Heimdall on boot (optional)
 
     systemctl disable heimdalld
 
 \
-Download Heimdall snapshots (this might take hours)
+Download Heimdall snapshots (this might take hours and [lots of space](./get-snapshot-dl-sizes.md))
 
     tmux
     bash snapdown.sh -n mainnet -c heimdall -d /mnt/data/heimdall -t /mnt/data/heimdall-tmp -v true -z true -k false
@@ -86,16 +86,16 @@ Check sync status - check [info-heimdall](./info-heimdall)
 
 Get and install the latest stable release from https://github.com/maticnetwork/bor/releases
 
-    wget https://github.com/maticnetwork/bor/releases/download/v1.0.6/bor-v1.0.6-amd64.deb
-    wget https://github.com/maticnetwork/bor/releases/download/v1.0.6/bor-mainnet-sentry-config_v1.0.6-amd64.deb
-    apt install ./bor-v1.0.6-amd64.deb ./bor-mainnet-sentry-config_v1.0.6-amd64.deb
+    wget https://github.com/maticnetwork/bor/releases/download/v1.1.0/bor-v1.1.0-amd64.deb
+    wget https://github.com/maticnetwork/bor/releases/download/v1.1.0/bor-mainnet-sentry-config_v1.1.0-amd64.deb
+    apt install ./bor-v1.1.0-amd64.deb ./bor-mainnet-sentry-config_v1.1.0-amd64.deb
 
 Dont run Bor on boot (optional)
 
     systemctl disable bor
 
 \
-Download Bor snapshots (this might take days)
+Download Bor snapshots (this might take days and [lots of space](./get-snapshot-dl-sizes.md))
 
     tmux
     bash snapdown.sh -n mainnet -c bor -d /mnt/data/bor -t /mnt/data/bor-tmp -v true -z true -k false
