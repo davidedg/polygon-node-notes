@@ -161,6 +161,14 @@ Create data structure and symlink the snapshot chaindata (see also [bor-alternat
     mkdir /mnt/data/bor/bor/triecache
     ln -s /mnt/data/bor/bor/triecache /var/lib/bor/data/bor/triecache
 
+\
+Download the mainnet bor genesis file
+
+    curl -o /var/lib/bor/data/genesis.json 'https://raw.githubusercontent.com/maticnetwork/bor/master/builder/files/genesis-mainnet-v1.json'
+
+\
+Check structure (bor.ipc and keystore will be available after bor is running)
+
     tree -F -L 3 /var/lib/bor
 	/var/lib/bor/
         ├── config-default-sentry.toml
@@ -176,12 +184,6 @@ Create data structure and symlink the snapshot chaindata (see also [bor-alternat
 	    ├── bor.ipc=
 	    ├── genesis.json
 	    └── keystore/
-
-
-
-Download the mainnet bor genesis file
-
-    curl -o /var/lib/bor/data/genesis.json 'https://raw.githubusercontent.com/maticnetwork/bor/master/builder/files/genesis-mainnet-v1.json'
 
 \
 Reset permissions to bor user (mind the `-L` switch !) and check that no other files are not owned by bor
