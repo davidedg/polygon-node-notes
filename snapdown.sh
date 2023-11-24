@@ -11,6 +11,8 @@
 #  - stream downloaded files directly into an extraction pipe, reducing time and required space
 #  - preserve downloaded files
 #  - separated temporary directory to hold downloaded and temporary data
+#  - use --keep-directory-symlink in tar extraction to preserve existing symlinks, this allows to
+#     pre-create symlinks pointing to slower disks for ./ancient for example
 #
 # If you wish to send your appreciation for this work, you can send me any token on any network:
 # 0xDd288FA0D04468bEeA02F9996bc16D1Fe599D827
@@ -227,7 +229,7 @@ for file in $(find $tempdir -name "$client-$network-snapshot-bulk-*-part-*" -pri
         processed_dates[$datestamp]=1
         if [[ "$streams" == "true" ]]; then
 			#open streamer
-			tar -I zstd -xf - -C . < $FIFO &
+			tar -I zstd --keep-directory-symlink -xf - -C . < $FIFO &
 			cat > $FIFO &
 			DUMMYWRITER=$!
 			
@@ -264,7 +266,7 @@ for file in $(find $tempdir -name "$client-$network-snapshot-*-part-*" -print | 
         processed_dates[$datestamp]=1
         if [[ "$streams" == "true" ]]; then
 			#open streamer
-			tar -I zstd -xf - -C . --strip-components=3 < $FIFO &
+			tar -I zstd --keep-directory-symlink -xf - -C . --strip-components=3 < $FIFO &
 			cat > $FIFO &
 			DUMMYWRITER=$!
 			
