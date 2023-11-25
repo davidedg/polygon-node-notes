@@ -1,13 +1,15 @@
-# polygon-node-notes
-Notes on building a MAINNET Polygon node on Debian
-
-If you wish to send your appreciation for this work, you can send me any token on any network:
-0xDd288FA0D04468bEeA02F9996bc16D1Fe599D827
+# Polygon Node notes
+Notes on building a MAINNET Polygon node on Debian starting from snapshots
 
 \
-Download the snapshot downloader script:
+If you wish to send your appreciation for this work, you can send me any ERC-20 token on any network to this address:
+0xDd288FA0D04468bEeA02F9996bc16D1Fe599D827
+
+
+### Download the IMPROVED snapshot downloader script:
 
     wget https://github.com/davidedg/polygon-node-notes/raw/main/snapdown.sh
+
 
 ## Heimdall (req ports: 26656 tcp)
 
@@ -22,10 +24,10 @@ Dont run Heimdall on boot (optional)
     systemctl disable heimdalld
 
 \
-Download Heimdall snapshots (this might take hours and [lots of space](./get-snapshot-dl-sizes.md))
+Download Heimdall snapshots (this might take hours and lots of space ...[how much?](./get-snapshot-dl-sizes.md))
 
     tmux
-    bash snapdown.sh -n mainnet -c heimdall -d /mnt/data/heimdall -t /mnt/data/heimdall-tmp -v true -z true -k false
+    bash snapdown.sh -n mainnet -c heimdall -d /mnt/ssd/heimdall -t /mnt/ssd/heimdall-tmp -v true -z true -k false
 
 \
 Edit the unit definition if required (e.g.: change User to root or change the "--chain=mainnet" - but for this you'd be better off with starting with a different profile deb)
@@ -60,7 +62,7 @@ Changes to `/var/lib/heimdall/config/config.toml`
 \
 Symlink the downloaded heimdall snaphot to data directory
 
-    mv /var/lib/heimdall/data /var/lib/heimdall/data-orig && sudo -u heimdall  ln -s /mnt/data/heimdall /var/lib/heimdall/data 
+    mv /var/lib/heimdall/ssd /var/lib/heimdall/ssd-orig && sudo -u heimdall  ln -s /mnt/ssd/heimdall /var/lib/heimdall/ssd 
 
 Reset permissions to heimdall user (mind the `-L` switch !) and check that no other files are not owned by heimdall
 
@@ -90,16 +92,68 @@ Get and install the latest stable release from https://github.com/maticnetwork/b
     wget https://github.com/maticnetwork/bor/releases/download/v1.1.0/bor-mainnet-sentry-config_v1.1.0-amd64.deb
     apt install ./bor-v1.1.0-amd64.deb ./bor-mainnet-sentry-config_v1.1.0-amd64.deb
 
-Dont run Bor on boot (optional)
+Dont run Bor on boot (optional - I prefer to start it manually after checking that heimdall is in sync)
 
     systemctl disable bor
 
 \
-Download Bor snapshots (this might take days and [lots of space](./get-snapshot-dl-sizes.md))
+Understand the directory structure.
+\
+Bor requires very fast storage for chaindata (recent blocks) - SSD is strictly required (NVMe is recommended).
+\
+We will download the snapshots in `/mnt/tmpdrv/bor-snap` and the final structure will reside in `/mnt/ssd/bor/`
+\
+Final directory structure will be:
+
+	/var/lib/bor/
+         ├── config-default-sentry.toml
+	 ├── config.toml
+	 └── data -> /mnt/ssd/bor/data/
+
+  	/mnt/ssd/bor/
+                 ├── ancient/    << this dir may reside on a slower storage
+                 ├── snapshot/
+                 └── data/
+                      ├── bor/
+                      │   ├── chaindata -> /mnt/ssd/bor/snapshot/
+                      │   ├── LOCK
+                      │   ├── nodekey
+                      │   ├── nodes -> /mnt/ssd/bor/snapshot/bor/nodes/
+                      │   ├── transactions.rlp
+                      │   └── triecache/
+                      ├── bor.ipc=
+                      ├── genesis.json
+                      └── keystore/
+\
+\
+Create structure
+
+    mkdir -p /mnt/ssd/bor/snapshot
+    mkdir -p /mnt/ssd/bor/data
+
+    ln -s /mnt/ssd/bor/data /var/lib/bor/data
+    mkdir -p /var/lib/bor/data/bor
+    ln -s /mnt/ssd/bor/snapshot           /var/lib/bor/data/bor/chaindata
+    ln -s /mnt/ssd/bor/snapshot/bor/nodes /var/lib/bor/data/bor/nodes
+
+
+Optionally, ancient blocks can reside on slower storage (e.g. [hdd + nvme cache](https://github.com/davidedg/linux-notes/blob/main/lvm-cache-raid0.sh)).
+Before extracting the snapshots, we can create the ancient path as a symlink to the slower storage, e.g.:
+
+	mkdir -p /mnt/hddcached/bor/ancient
+ 	ln -s /mnt/hddcached/bor/ancient /mnt/ssd/bor/snapshot/ancient
+		
+The download script will extract and place data by following any existing symlinks, thus extracting the ancient data into `/mnt/hddcached/bor/ancient/`
+\
+This feature is optional, if you do not want it, just do not create the ancient symlink and adjust the ancient path accordingly in the config.toml file.
+
+\
+Download Bor snapshots (this might take days and lots of space ...[how much?](./get-snapshot-dl-sizes.md))
 
     tmux
-    bash snapdown.sh -n mainnet -c bor -d /mnt/data/bor -t /mnt/data/bor-tmp -v true -z true -k false
+    bash snapdown.sh -n mainnet -c bor -d /mnt/ssd/bor/snapshot -t /mnt/tmpdrv/bor-snap -v true -z true -k false
 
+\
 Generate a new config.toml in `/var/lib/bor/config.toml`
 
     mv /var/lib/bor/config.toml /var/lib/bor/config-default-sentry.toml && bor dumpconfig > /var/lib/bor/config.toml
@@ -111,6 +165,12 @@ Changes to `/var/lib/bor/config.toml`
 
         sed -i 's|^datadir\s*=.*|datadir = "/var/lib/bor/data"|g' /var/lib/bor/config.toml
 
+  - Change ancient datadir
+
+        sed -i 's|^ancient\s*=.*|ancient = "/mnt/ssd/bor/ancient"|g' /var/lib/bor/config.toml
+    	# OR, if using the slower drive #
+        sed -i 's|^ancient\s*=.*|ancient = "/mnt/hddcached/bor/ancient"|g' /var/lib/bor/config.toml
+    
 
   - Enable HTTP, WS, IPC endpoints
 
@@ -151,45 +211,19 @@ Changes to `/var/lib/bor/config.toml`
           metrics = true
 
 \
-Create data structure and symlink the snapshot chaindata (see also [bor-alternative.md](./bor-alternative.md))
-
-    rm /mnt/data/bor/bor/chaindata
-    
-    mkdir -p /var/lib/bor/data/bor
-    ln -s /mnt/data/bor /var/lib/bor/data/bor/chaindata
-    ln -s /mnt/data/bor/bor/nodes /var/lib/bor/data/bor/nodes
-    mkdir /mnt/data/bor/bor/triecache
-    ln -s /mnt/data/bor/bor/triecache /var/lib/bor/data/bor/triecache
-
-\
 Download the mainnet bor genesis file
 
     curl -o /var/lib/bor/data/genesis.json 'https://raw.githubusercontent.com/maticnetwork/bor/master/builder/files/genesis-mainnet-v1.json'
-
-\
-Check structure (bor.ipc and keystore will be available after bor is running)
-
-    tree -F -L 3 /var/lib/bor
-	/var/lib/bor/
-        ├── config-default-sentry.toml
-	├── config.toml
-	└── data/
-	    ├── bor/
-	    │   ├── chaindata -> /mnt/data/bor/
-	    │   ├── nodes -> /mnt/data/bor/bor/nodes/
-	    │   ├── triecache ->  /mnt/data/bor/bor/triecache/
-	    │   ├── LOCK
-	    │   ├── nodekey
-	    │   └── transactions.rlp
-	    ├── bor.ipc=
-	    ├── genesis.json
-	    └── keystore/
 
 \
 Reset permissions to bor user (mind the `-L` switch !) and check that no other files are not owned by bor
 
     chown bor:nogroup -L -R /var/lib/bor/
     find -L /var/lib/bor/ -not -user bor
+    
+    chown bor:nogroup -L -R /mnt/hddcached/bor
+    find -L /mnt/hddcached/bor -not -user bor
+    
 
 Run Bor (double check that heimdall is in sync!)
 
