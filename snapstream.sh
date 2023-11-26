@@ -5,16 +5,16 @@
 #  based on the original script: https://snapshot-download.polygon.technology/snapdown.sh
 #   the default behaviour is retained, new functionalities must be enabled explicitly
 #
-# ver 12/10/2023-001
+# ver 26/11/2023-002
 #
 # Added option/functionality to:
 #  - stream downloaded files directly into an extraction pipe, reducing time and required space
 #  - preserve downloaded files
 #  - separated temporary directory to hold downloaded and temporary data
 #  - use --keep-directory-symlink in tar extraction to preserve existing symlinks, this allows to
-#     pre-create symlinks pointing to slower disks for ./ancient for example
+#     pre-create symlinks pointing to slower disks for ./ancient
 #
-# If you wish to send your appreciation for this work, you can send me any token on any network:
+# If you wish to send your appreciation for this work, you can send me any ERC-20 token on any network:
 # 0xDd288FA0D04468bEeA02F9996bc16D1Fe599D827
 #
 ########################################################################################################
