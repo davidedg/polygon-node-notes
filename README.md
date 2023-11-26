@@ -6,9 +6,9 @@ If you wish to send your appreciation for this work, you can send me any ERC-20 
 0xDd288FA0D04468bEeA02F9996bc16D1Fe599D827
 
 
-### Download the IMPROVED snapshot downloader script:
+### Download the IMPROVED snapshot downloader [script](https://github.com/davidedg/polygon-node-notes/raw/main/snapstream.sh):
 
-    wget https://github.com/davidedg/polygon-node-notes/raw/main/snapdown.sh
+    wget https://github.com/davidedg/polygon-node-notes/raw/main/snapstream.sh
 
 
 ## Heimdall (req ports: 26656 tcp)
@@ -27,7 +27,7 @@ Dont run Heimdall on boot (optional)
 Download Heimdall snapshots (this might take hours and lots of space ...[how much?](./get-snapshot-dl-sizes.md))
 
     tmux
-    bash snapdown.sh -n mainnet -c heimdall -d /mnt/ssd/heimdall -t /mnt/ssd/heimdall-tmp -v true -z true -k false
+    bash snapstream.sh -n mainnet -c heimdall -d /mnt/ssd/heimdall -t /mnt/ssd/heimdall-tmp -v true -z true -k false
 
 \
 Edit the unit definition if required (e.g.: change User to root or change the "--chain=mainnet" - but for this you'd be better off with starting with a different profile deb)
@@ -151,7 +151,7 @@ This feature is optional, if you do not want it, just do not create the ancient 
 Download Bor snapshots (this might take days and lots of space ...[how much?](./get-snapshot-dl-sizes.md))
 
     tmux
-    bash snapdown.sh -n mainnet -c bor -d /mnt/ssd/bor/snapshot -t /mnt/tmpdrv/bor-snap -v true -z true -k false
+    bash snapstream.sh -n mainnet -c bor -d /mnt/ssd/bor/snapshot -t /mnt/tmpdrv/bor-snap -v true -z true -k false
 
 \
 Generate a new config.toml in `/var/lib/bor/config.toml`
