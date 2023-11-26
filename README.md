@@ -96,35 +96,32 @@ Dont run Bor on boot (optional - I prefer to start it manually after checking th
 
     systemctl disable bor
 
-\
-Understand the directory structure.
-\
+### Understand the directory structure:
 Bor requires very fast storage for chaindata (recent blocks) - SSD is strictly required (NVMe is recommended).
 \
 We will download the snapshots in `/mnt/tmpdrv/bor-snap` and the final structure will reside in `/mnt/ssd/bor/`
 \
 Final directory structure will be:
 
-	/var/lib/bor/
-         ├── config-default-sentry.toml
-	 ├── config.toml
-	 └── data -> /mnt/ssd/bor/data/
+    /var/lib/bor/
+             ├── config-default-sentry.toml
+             ├── config.toml
+             └── data -> /mnt/ssd/bor/data/
 
-  	/mnt/ssd/bor/
-                 ├── ancient/    << this dir may reside on a slower storage
-                 ├── snapshot/
-                 └── data/
-                      ├── bor/
-                      │   ├── chaindata -> /mnt/ssd/bor/snapshot/
-                      │   ├── LOCK
-                      │   ├── nodekey
-                      │   ├── nodes -> /mnt/ssd/bor/snapshot/bor/nodes/
-                      │   ├── transactions.rlp
-                      │   └── triecache/
-                      ├── bor.ipc=
-                      ├── genesis.json
-                      └── keystore/
-\
+    /mnt/ssd/bor/
+             ├── ancient/    << this dir may reside on a slower storage
+             ├── snapshot/
+             └── data/
+                  ├── bor/
+                  │   ├── chaindata -> /mnt/ssd/bor/snapshot/
+                  │   ├── LOCK
+                  │   ├── nodekey
+                  │   ├── nodes -> /mnt/ssd/bor/snapshot/bor/nodes/
+                  │   ├── transactions.rlp
+                  │   └── triecache/
+                  ├── bor.ipc=
+                  ├── genesis.json
+                  └── keystore/
 \
 Create structure
 
@@ -136,8 +133,9 @@ Create structure
     ln -s /mnt/ssd/bor/snapshot           /var/lib/bor/data/bor/chaindata
     ln -s /mnt/ssd/bor/snapshot/bor/nodes /var/lib/bor/data/bor/nodes
 
-
+\
 Optionally, ancient blocks can reside on slower storage (e.g. [hdd + nvme cache](https://github.com/davidedg/linux-notes/blob/main/lvm-cache-raid0.sh)).
+\
 Before extracting the snapshots, we can create the ancient path as a symlink to the slower storage, e.g.:
 
 	mkdir -p /mnt/hddcached/bor/ancient
