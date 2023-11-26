@@ -24,7 +24,7 @@ Dont run Heimdall on boot (optional)
     systemctl disable heimdalld
 
 \
-Download Heimdall snapshots (this might take hours and lots of space ...[how much?](./get-snapshot-dl-sizes.md))
+Download Heimdall snapshots (this might take hours and lots of space ... [how much?](./get-snapshot-dl-sizes.md))
 
     tmux
     bash snapstream.sh -n mainnet -c heimdall -d /mnt/ssd/heimdall -t /mnt/ssd/heimdall-tmp -v true -z true -k false
@@ -42,7 +42,7 @@ Initialize Heimdall config file
     sudo -u heimdall heimdalld init --chain=mainnet --home /var/lib/heimdall
 
 \
-Use a pre-populated address book file ( [example](./addrbook.json) ), put it under `/var/lib/heimdall/config/`
+(optional) Use a pre-populated address book file ( [example](./addrbook.json) ), put it under `/var/lib/heimdall/config/`
 
 \
 Changes to `/var/lib/heimdall/config/config.toml`
@@ -148,7 +148,7 @@ The download script will extract and place data by following any existing symlin
 This feature is optional, if you do not want it, just do not create the ancient symlink and adjust the ancient path accordingly in the config.toml file.
 
 \
-Download Bor snapshots (this might take days and lots of space ...[how much?](./get-snapshot-dl-sizes.md))
+Download Bor snapshots (this might take days and lots of space ... [how much?](./get-snapshot-dl-sizes.md))
 
     tmux
     bash snapstream.sh -n mainnet -c bor -d /mnt/ssd/bor/snapshot -t /mnt/tmpdrv/bor-snap -v true -z true -k false
